@@ -1,0 +1,5 @@
+server:
+  glowroot_url: "http://glowroot-server:4000"
+  exporter_port: 9101
+  glowroot_time_interval_minutes: 5
+  metrics_update_interval_seconds: 30
