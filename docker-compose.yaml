@@ -1,0 +1,9 @@
+version: '3'
+services:
+  glowroot-exporter:
+    image: ufkunkaraman/glowroot-exporter:latest
+    ports:
+      - "9101:9101"
+    volumes:
+      - ./config.yaml:/app/config.yaml
+    restart: unless-stopped
