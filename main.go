@@ -29,17 +29,11 @@ type ErrorSummary struct {
 	} `json:"transactions"`
 }
 
-// Add new struct for transaction summary response
-type TransactionSummary struct {
-	Overall struct {
-		TotalDurationNanos float64 `json:"totalDurationNanos"`
-		TransactionCount   int     `json:"transactionCount"`
-	} `json:"overall"`
-	Transactions []struct {
-		TransactionName    string  `json:"transactionName"`
-		TotalDurationNanos float64 `json:"totalDurationNanos"`
-		TransactionCount   int     `json:"transactionCount"`
-	} `json:"transactions"`
+// Add new struct for points response
+type Points struct {
+	NormalPoints  [][4]interface{} `json:"normalPoints"`
+	ErrorPoints   [][4]interface{} `json:"errorPoints"`
+	PartialPoints [][4]interface{} `json:"partialPoints"`
 }
 
 type AgentRollup struct {
@@ -89,14 +83,13 @@ var (
 		},
 		[]string{"agent_rollup", "agent_id"},
 	)
-
 	// errorTotalCount tracks the total number of errors for each agent
 	// Labels:
 	//   - agent_rollup: The parent agent rollup ID
 	//   - agent_id: The agent ID reporting the errors
 	errorTotalCount = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "glowroot_agent_rollup_id_error_total_count",
+			Name: "glowroot_summaries_agent_rollup_id_error_total_count",
 			Help: "Total error count from overall statistics",
 		},
 		[]string{"agent_rollup", "agent_id"},
@@ -108,7 +101,7 @@ var (
 	//   - agent_id: The agent ID reporting the transactions
 	transactionTotalCount = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "glowroot_agent_rollup_id_error_transaction_total_count",
+			Name: "glowroot_summaries_agent_rollup_id_error_transaction_total_count",
 			Help: "Total transaction count from overall statistics",
 		},
 		[]string{"agent_rollup", "agent_id"},
@@ -122,35 +115,28 @@ var (
 	//   - transaction_count: Total number of occurrences of this transaction
 	transactionError = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "glowroot_agent_rollup_id_error",
+			Name: "glowroot_summaries_agent_rollup_id_error",
 			Help: "Error count per individual transaction",
 		},
 		[]string{"agent_rollup", "agent_id", "transaction_name"},
 	)
 
-	// slowTraceTransactionTotalCount tracks the total number of slow transactions
-	// Labels:
-	//   - agent_rollup: The parent agent rollup ID
-	//   - agent_id: The agent ID reporting the slow traces
-	slowTraceTransactionTotalCount = prometheus.NewGaugeVec(
+	// traceCountSlowTrace tracks the number of traces for each agent
+	traceCountSlowTrace = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "glowroot_agent_rollup_id_slow_trace_transaction_total_count",
-			Help: "Total transaction count from slow trace overall statistics",
+			Name: "glowroot_trace_count_agent_rollup_id_slow_trace",
+			Help: "Total slow trace count for agent",
 		},
 		[]string{"agent_rollup", "agent_id"},
 	)
 
-	// slowTraceTransaction tracks individual slow transactions and their counts
-	// Labels:
-	//   - agent_rollup: The parent agent rollup ID
-	//   - agent_id: The agent ID reporting the slow trace
-	//   - transaction_name: The name of the slow transaction
-	slowTraceTransaction = prometheus.NewGaugeVec(
+	// pointsSlowTrace tracks the trace points for each agent
+	pointsSlowTrace = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "glowroot_agent_rollup_id_slow_trace_transaction",
-			Help: "Transaction count per slow trace",
+			Name: "glowroot_points_agent_rollup_id_slow_trace",
+			Help: "Slow Trace points information",
 		},
-		[]string{"agent_rollup", "agent_id", "transaction_name"},
+		[]string{"agent_rollup", "agent_id", "trace_id", "status"},
 	)
 )
 
@@ -160,8 +146,8 @@ func init() {
 	prometheus.MustRegister(errorTotalCount)
 	prometheus.MustRegister(transactionTotalCount)
 	prometheus.MustRegister(transactionError)
-	prometheus.MustRegister(slowTraceTransactionTotalCount)
-	prometheus.MustRegister(slowTraceTransaction)
+	prometheus.MustRegister(traceCountSlowTrace)
+	prometheus.MustRegister(pointsSlowTrace)
 }
 
 // fetchAgentRollups retrieves the list of top-level agent rollups from Glowroot
@@ -192,11 +178,11 @@ func fetchAgentRollups(baseURL string) ([]AgentRollup, error) {
 	return rollups, nil
 }
 
-// fetchChildAgents retrieves child agents for a given top-level agent rollup
+// fetchChildAgentRollups retrieves child agents for a given top-level agent rollup
 // baseURL: Base URL of the Glowroot server
 // topLevelID: ID of the parent agent rollup
 // Returns: List of child agents and error if any
-func fetchChildAgents(baseURL, topLevelID string) ([]ChildAgent, error) {
+func fetchChildAgentRollups(baseURL, topLevelID string) ([]ChildAgent, error) {
 	now := time.Now().UnixNano() / int64(time.Millisecond)
 	from := now - (int64(config.Server.GlowrootTimeIntervalMinutes) * 60 * 1000)
 
@@ -242,16 +228,40 @@ func fetchErrorSummary(baseURL, agentID string) (*ErrorSummary, error) {
 	return &summary, nil
 }
 
-// fetchTransactionSummary retrieves transaction performance data for a specific agent
-// baseURL: Base URL of the Glowroot server
-// agentID: ID of the agent to fetch transactions for
-// Returns: Transaction summary containing overall and per-transaction statistics
-func fetchTransactionSummary(baseURL, agentID string) (*TransactionSummary, error) {
+// fetchTraceCountSlowTrace retrieves trace count for a specific agent
+func fetchTraceCountSlowTrace(baseURL, agentID string) (int, error) {
 	now := time.Now().UnixNano() / int64(time.Millisecond)
 	from := now - (int64(config.Server.GlowrootTimeIntervalMinutes) * 60 * 1000)
 
-	url := fmt.Sprintf("%s/backend/transaction/summaries?agent-rollup-id=%s&transaction-type=Web&from=%d&to=%d&sort-order=total-time&limit=10",
+	url := fmt.Sprintf("%s/backend/transaction/trace-count?agent-rollup-id=%s&transaction-type=Web&from=%d&to=%d",
 		baseURL, url.QueryEscape(agentID), from, now)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return 0, fmt.Errorf("HTTP request failed: %v", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return 0, fmt.Errorf("reading response failed: %v", err)
+	}
+
+	count := 0
+	if err := json.Unmarshal(body, &count); err != nil {
+		return 0, fmt.Errorf("JSON unmarshal failed: %v", err)
+	}
+
+	return count, nil
+}
+
+// Add new function after other fetch functions
+func fetchPointsSlowTrace(baseURL, agentID string) (*Points, error) {
+	now := time.Now().UnixNano() / int64(time.Millisecond)
+	from := now - (int64(config.Server.GlowrootTimeIntervalMinutes) * 60 * 1000)
+
+	url := fmt.Sprintf("%s/backend/transaction/points?transaction-type=Web&from=%d&to=%d&duration-millis-low=0&headline-comparator=begins&headline=&error-message-comparator=begins&error-message=&user-comparator=begins&user=&attribute-name=&attribute-value-comparator=begins&attribute-value=&limit=500&agent-rollup-id=%s",
+		baseURL, from, now, url.QueryEscape(agentID))
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -259,12 +269,47 @@ func fetchTransactionSummary(baseURL, agentID string) (*TransactionSummary, erro
 	}
 	defer resp.Body.Close()
 
-	var summary TransactionSummary
-	if err := json.NewDecoder(resp.Body).Decode(&summary); err != nil {
+	var points Points
+	if err := json.NewDecoder(resp.Body).Decode(&points); err != nil {
 		return nil, fmt.Errorf("JSON unmarshal failed: %v", err)
 	}
 
-	return &summary, nil
+	return &points, nil
+}
+
+// Add this function before updateMetrics
+func logMetrics(metricNames ...string) {
+	metricFamilies, err := prometheus.DefaultGatherer.Gather()
+	if err != nil {
+		log.Printf("Error gathering metrics: %v", err)
+		return
+	}
+
+	for _, mf := range metricFamilies {
+		// Check if this metric name is in the requested list
+		shouldLog := false
+		for _, name := range metricNames {
+			if mf.GetName() == name {
+				shouldLog = true
+				break
+			}
+		}
+
+		if shouldLog {
+			log.Printf("Metric: %s", mf.GetName())
+			log.Printf("Help: %s", mf.GetHelp())
+
+			for _, metric := range mf.GetMetric() {
+				labels := make([]string, len(metric.GetLabel()))
+				for i, label := range metric.GetLabel() {
+					labels[i] = fmt.Sprintf("%s=%s", label.GetName(), label.GetValue())
+				}
+				value := metric.GetGauge().GetValue()
+				log.Printf("  Labels: {%s}, Value: %f", labels, value)
+			}
+			log.Println("---")
+		}
+	}
 }
 
 // loadConfig loads and parses the YAML configuration file
@@ -290,7 +335,19 @@ func loadConfig(configPath string) (*Config, error) {
 // baseURL: Base URL of the Glowroot server
 // This function runs in an infinite loop with configured sleep intervals
 func updateMetrics(baseURL string) {
+
 	for {
+		// Define new variables for metrics
+		agentRollupNew := agentRollup
+		agentRollupIDNew := agentRollupID
+		errorTotalCountNew := errorTotalCount
+		transactionTotalCountNew := transactionTotalCount
+		transactionErrorNew := transactionError
+		traceCountSlowTraceNew := traceCountSlowTrace
+		pointsSlowTraceNew := pointsSlowTrace
+		// fmt.Println("BEGIN agentRollup pointer is pointing to:", &agentRollup)
+		// fmt.Println("BEGIN agentRollupNew pointer is pointing to:", &agentRollupNew)
+
 		rollups, err := fetchAgentRollups(baseURL)
 		if err != nil {
 			log.Printf("Error fetching agent rollups: %v", err)
@@ -300,14 +357,14 @@ func updateMetrics(baseURL string) {
 
 		for _, rollup := range rollups {
 			// Set metrics for the rollup info
-			agentRollup.With(prometheus.Labels{
+			agentRollupNew.With(prometheus.Labels{
 				"agent_rollup":              rollup.ID,
 				"agent_rollup_display_name": rollup.Display,
 			}).Set(1)
 
 			// Remove the empty agent_id metric set
 			// Fetch and set metrics for child agents
-			children, err := fetchChildAgents(baseURL, rollup.ID)
+			children, err := fetchChildAgentRollups(baseURL, rollup.ID)
 			if err != nil {
 				log.Printf("Error fetching child agents for %s: %v", rollup.ID, err)
 				continue
@@ -315,7 +372,7 @@ func updateMetrics(baseURL string) {
 
 			for _, child := range children {
 				// Set existing agent ID metric
-				agentRollupID.With(prometheus.Labels{
+				agentRollupIDNew.With(prometheus.Labels{
 					"agent_rollup": rollup.ID,
 					"agent_id":     child.ID,
 				}).Set(1)
@@ -328,49 +385,96 @@ func updateMetrics(baseURL string) {
 				}
 
 				// Set total counts
-				errorTotalCount.With(prometheus.Labels{
+				errorTotalCountNew.With(prometheus.Labels{
 					"agent_rollup": rollup.ID,
 					"agent_id":     child.ID,
 				}).Set(float64(summary.Overall.ErrorCount))
 
-				transactionTotalCount.With(prometheus.Labels{
+				transactionTotalCountNew.With(prometheus.Labels{
 					"agent_rollup": rollup.ID,
 					"agent_id":     child.ID,
 				}).Set(float64(summary.Overall.TransactionCount))
 
 				// Set per-transaction error counts
 				for _, t := range summary.Transactions {
-					transactionError.With(prometheus.Labels{
+					transactionErrorNew.With(prometheus.Labels{
 						"agent_rollup":     rollup.ID,
 						"agent_id":         child.ID,
 						"transaction_name": t.TransactionName,
 					}).Set(float64(t.ErrorCount))
 				}
 
-				// Fetch and set transaction summary metrics
-				txSummary, err := fetchTransactionSummary(baseURL, child.ID)
+				// Fetch and set trace count
+				count, err := fetchTraceCountSlowTrace(baseURL, child.ID)
 				if err != nil {
-					log.Printf("Error fetching transaction summary for agent %s: %v", child.ID, err)
+					log.Printf("Error fetching trace count for agent %s: %v", child.ID, err)
 					continue
 				}
 
-				// Set overall transaction count
-				slowTraceTransactionTotalCount.With(prometheus.Labels{
+				traceCountSlowTraceNew.With(prometheus.Labels{
 					"agent_rollup": rollup.ID,
 					"agent_id":     child.ID,
-				}).Set(float64(txSummary.Overall.TransactionCount))
+				}).Set(float64(count))
 
-				// Set per-transaction counts
-				for _, t := range txSummary.Transactions {
-					slowTraceTransaction.With(prometheus.Labels{
-						"agent_rollup":     rollup.ID,
-						"agent_id":         child.ID,
-						"transaction_name": t.TransactionName,
-					}).Set(float64(t.TransactionCount))
+				// Fetch and set points data
+				points, err := fetchPointsSlowTrace(baseURL, child.ID)
+				if err != nil {
+					log.Printf("Error fetching points for agent %s: %v", child.ID, err)
+					continue
 				}
+
+				// Process all point types
+				processPoints := func(points [][4]interface{}, pointType string) {
+					for _, point := range points {
+						traceTime := point[1].(float64)
+						agentId := point[2].(string)
+						traceId := point[3].(string)
+
+						pointsSlowTraceNew.With(prometheus.Labels{
+							"agent_rollup": rollup.ID,
+							"agent_id":     agentId,
+							"trace_id":     traceId,
+							"status":       pointType,
+						}).Set(traceTime)
+					}
+				}
+
+				processPoints(points.NormalPoints, "normal")
+				processPoints(points.ErrorPoints, "error")
+				processPoints(points.PartialPoints, "partial")
 			}
 		}
 
+		// // After processing all metrics, log them with specific metric names
+		// logMetrics(
+		// 	"glowroot_agent_rollup",
+		// )
+		// // After processing all metrics, log them with specific metric names
+		// logMetrics(
+		// 	"glowroot_agent_rollup",
+		// 	"glowroot_agent_rollup_id",
+		// 	"glowroot_summaries_agent_rollup_id_error_total_count",
+		// 	"glowroot_summaries_agent_rollup_id_error_transaction_total_count",
+		// 	"glowroot_summaries_agent_rollup_id_error",
+		// 	"glowroot_trace_count_agent_rollup_id_slow_trace",
+		// 	"glowroot_points_agent_rollup_id_slow_trace",
+		// )
+
+		// Define new variables for metrics
+		agentRollup = agentRollupNew
+		agentRollupID = agentRollupIDNew
+		errorTotalCount = errorTotalCountNew
+		transactionTotalCount = transactionTotalCountNew
+		transactionError = transactionErrorNew
+		traceCountSlowTrace = traceCountSlowTraceNew
+		pointsSlowTrace = pointsSlowTraceNew
+
+		// fmt.Println("END agentRollup pointer is pointing to:", &agentRollup)
+		// fmt.Println("END agentRollupNew pointer is pointing to:", &agentRollupNew)
+		// fmt.Println("END agentRollup pointer is pointing to:", agentRollup)
+		// fmt.Println("END agentRollupNew pointer is pointing to:", agentRollupNew)
+
+		// Sleep for configured interval before fetching metrics again
 		time.Sleep(time.Duration(config.Server.MetricsUpdateIntervalSeconds) * time.Second)
 	}
 }
@@ -390,6 +494,9 @@ func main() {
 	// Expose Prometheus metrics endpoint
 	http.Handle("/metrics", promhttp.Handler())
 	addr := fmt.Sprintf(":%d", config.Server.ExporterPort)
+	log.Printf("Glowroot: %s", config.Server.GlowrootURL)
+	log.Printf("Metrics Update Interval Seconds: %d", config.Server.MetricsUpdateIntervalSeconds)
+	log.Printf("Glowroot Time Interval Minutes: %d", config.Server.GlowrootTimeIntervalMinutes)
 	log.Printf("Starting Glowroot exporter on %s", addr)
 	log.Fatal(http.ListenAndServe(addr, nil))
 }

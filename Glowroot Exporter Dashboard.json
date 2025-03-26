@@ -1,41 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "10.2.2"
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -58,7 +21,7 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 11074,
   "graphTooltip": 0,
-  "id": null,
+  "id": 634,
   "links": [
     {
       "$$hashKey": "object:2300",
@@ -105,7 +68,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -117,8 +80,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-green",
-                    "value": null
+                    "color": "dark-green"
                   }
                 ]
               }
@@ -152,7 +114,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "count (up{job=~\"$job\"}) ",
@@ -168,7 +130,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -190,8 +152,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-green",
-                    "value": null
+                    "color": "dark-green"
                   },
                   {
                     "color": "dark-green",
@@ -229,7 +190,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "count (up{job=~\"$job\"} == 1) ",
@@ -245,7 +206,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "description": "",
           "fieldConfig": {
@@ -300,8 +261,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-green",
-                    "value": null
+                    "color": "dark-green"
                   },
                   {
                     "color": "dark-red",
@@ -339,7 +299,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "count (up{job=~\"$job\"} == 1)  by (instance)",
@@ -355,7 +315,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -377,8 +337,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-green",
-                    "value": null
+                    "color": "dark-green"
                   },
                   {
                     "color": "dark-red",
@@ -416,7 +375,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -436,7 +395,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -490,8 +449,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "dark-green",
-                    "value": null
+                    "color": "dark-green"
                   },
                   {
                     "color": "dark-red",
@@ -529,7 +487,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "count (up{job=~\"$job\"} == 0)  by (instance)",
@@ -559,7 +517,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -571,8 +529,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -610,12 +567,12 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum (glowroot_agent_rollup_id_error_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by(agent_rollup)",
+              "expr": "sum (glowroot_summaries_agent_rollup_id_error_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by(agent_rollup)",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": false,
@@ -631,7 +588,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -643,8 +600,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -682,12 +638,12 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": false,
-              "expr": "glowroot_agent_rollup_id_error_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
+              "expr": "glowroot_summaries_agent_rollup_id_error_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": false,
@@ -703,7 +659,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -747,8 +703,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -785,12 +740,12 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum (glowroot_agent_rollup_id_error_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by(agent_rollup)",
+              "expr": "sum (glowroot_summaries_agent_rollup_id_error_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by(agent_rollup)",
               "fullMetaSearch": false,
               "hide": false,
               "includeNullMetadata": true,
@@ -807,7 +762,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -851,8 +806,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -889,12 +843,12 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": false,
-              "expr": "glowroot_agent_rollup_id_error_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
+              "expr": "glowroot_summaries_agent_rollup_id_error_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
               "fullMetaSearch": false,
               "hide": false,
               "includeNullMetadata": true,
@@ -911,7 +865,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -994,12 +948,12 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": false,
-              "expr": "glowroot_agent_rollup_id_error{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
+              "expr": "glowroot_summaries_agent_rollup_id_error{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": false,
@@ -1029,7 +983,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1041,8 +995,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -1076,12 +1029,12 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum (glowroot_agent_rollup_id_error_transaction_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by(agent_rollup)",
+              "expr": "sum (glowroot_summaries_agent_rollup_id_error_transaction_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by(agent_rollup)",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": false,
@@ -1097,7 +1050,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1109,8 +1062,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -1144,12 +1096,12 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": false,
-              "expr": "glowroot_agent_rollup_id_error_transaction_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
+              "expr": "glowroot_summaries_agent_rollup_id_error_transaction_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": false,
@@ -1165,7 +1117,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1209,8 +1161,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1249,12 +1200,12 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum (glowroot_agent_rollup_id_error_transaction_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by(agent_rollup)",
+              "expr": "sum (glowroot_summaries_agent_rollup_id_error_transaction_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by(agent_rollup)",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": false,
@@ -1270,7 +1221,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1314,8 +1265,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1352,12 +1302,12 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": false,
-              "expr": "glowroot_agent_rollup_id_error_transaction_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
+              "expr": "glowroot_summaries_agent_rollup_id_error_transaction_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": false,
@@ -1382,12 +1332,12 @@
         "x": 0,
         "y": 3
       },
-      "id": 220,
+      "id": 242,
       "panels": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1399,8 +1349,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "yellow",
@@ -1446,12 +1395,12 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum (glowroot_agent_rollup_id_slow_trace_transaction_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by (agent_rollup)",
+              "expr": "sum (glowroot_trace_count_agent_rollup_id_slow_trace{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by (agent_rollup)",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": false,
@@ -1461,13 +1410,13 @@
               "useBackend": false
             }
           ],
-          "title": "Glowroot Total Slow Trace Transaction Count by Agent Rollup",
+          "title": "Glowroot Trace Count Agent Rollup Slow Trace",
           "type": "stat"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1479,8 +1428,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "yellow",
@@ -1526,12 +1474,12 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum (glowroot_agent_rollup_id_slow_trace_transaction_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by (agent_rollup,agent_id)",
+              "expr": "sum (glowroot_trace_count_agent_rollup_id_slow_trace{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by (agent_rollup,agent_id)",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": false,
@@ -1541,223 +1489,13 @@
               "useBackend": false
             }
           ],
-          "title": "Glowroot Total Slow Trace Transaction Count by Agent ID",
+          "title": "Glowroot Trace Count Agent Rollup Id Slow Trace",
           "type": "stat"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 24,
-            "x": 0,
-            "y": 10
-          },
-          "id": 236,
-          "options": {
-            "legend": {
-              "calcs": [
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "right",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "disableTextWrap": false,
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "sum (glowroot_agent_rollup_id_slow_trace_transaction_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by (agent_rollup)",
-              "fullMetaSearch": false,
-              "includeNullMetadata": true,
-              "instant": false,
-              "legendFormat": "{{agent_rollup}}",
-              "range": true,
-              "refId": "A",
-              "useBackend": false
-            }
-          ],
-          "title": "Glowroot Total Slow Trace Transaction Count by Agent Rollup",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 24,
-            "x": 0,
-            "y": 18
-          },
-          "id": 222,
-          "options": {
-            "legend": {
-              "calcs": [
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "right",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "disableTextWrap": false,
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "glowroot_agent_rollup_id_slow_trace_transaction_total_count{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
-              "fullMetaSearch": false,
-              "includeNullMetadata": true,
-              "instant": false,
-              "legendFormat": "{{agent_id}} {{agent_rollup}}",
-              "range": true,
-              "refId": "A",
-              "useBackend": false
-            }
-          ],
-          "title": "Glowroot Total Slow Trace Transaction Count by Agent  ID",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1816,9 +1554,9 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 26
+            "y": 10
           },
-          "id": 217,
+          "id": 236,
           "options": {
             "legend": {
               "calcs": [
@@ -1827,7 +1565,9 @@
               ],
               "displayMode": "table",
               "placement": "right",
-              "showLegend": true
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
             },
             "tooltip": {
               "mode": "single",
@@ -1838,26 +1578,271 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
-              "editorMode": "builder",
+              "editorMode": "code",
               "exemplar": false,
-              "expr": "glowroot_agent_rollup_id_slow_trace_transaction{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
+              "expr": "sum (glowroot_trace_count_agent_rollup_id_slow_trace{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}) by (agent_rollup)",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "instant": false,
-              "legendFormat": "{{agent_id}} {{agent_rollup}} {{transaction_name}}",
+              "legendFormat": "{{agent_rollup}}",
               "range": true,
               "refId": "A",
               "useBackend": false
             }
           ],
-          "title": "Glowroot Total Slow Trace Transaction Count by Agent ID, and Transaction Name",
+          "title": "Glowroot Trace Count Agent Rollup Slow Trace",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 18
+          },
+          "id": 222,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "disableTextWrap": false,
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "glowroot_trace_count_agent_rollup_id_slow_trace{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"}",
+              "fullMetaSearch": false,
+              "includeNullMetadata": true,
+              "instant": false,
+              "legendFormat": "{{agent_id}} {{agent_rollup}}",
+              "range": true,
+              "refId": "A",
+              "useBackend": false
+            }
+          ],
+          "title": "Glowroot Trace Count Agent Rollup Id Slow Trace",
           "type": "timeseries"
         }
       ],
-      "title": "Slow Transactions",
+      "title": "Slow Transactions ",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 220,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "ms"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 5
+          },
+          "id": 240,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Name",
+              "sortDesc": false
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "10.2.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "disableTextWrap": false,
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "sum by(status, agent_id, trace_id) (glowroot_points_agent_rollup_id_slow_trace{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\", trace_id=~\"$TraceId\", status=~\"$SlowTraceStatus\"})",
+              "format": "time_series",
+              "fullMetaSearch": false,
+              "includeNullMetadata": true,
+              "instant": false,
+              "legendFormat": "{{status}} {{agent_id}} {{trace_id}}",
+              "range": true,
+              "refId": "A",
+              "useBackend": false
+            }
+          ],
+          "title": "Glowroot Points Agent Rollup Slow Trace",
+          "transformations": [
+            {
+              "id": "convertFieldType",
+              "options": {
+                "conversions": [
+                  {
+                    "dateFormat": "",
+                    "destinationType": "number",
+                    "targetField": "timestamp",
+                    "timezone": "utc"
+                  },
+                  {
+                    "destinationType": "time",
+                    "targetField": "timestamp"
+                  }
+                ],
+                "fields": {}
+              }
+            }
+          ],
+          "type": "timeseries"
+        }
+      ],
+      "title": "Slow Transactions Detail",
       "type": "row"
     }
   ],
@@ -1867,10 +1852,18 @@
   "templating": {
     "list": [
       {
-        "current": {},
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
+          "uid": "prometheus"
         },
         "definition": "label_values(glowroot_agent_rollup,job)",
         "hide": 0,
@@ -1894,10 +1887,18 @@
         "useTags": false
       },
       {
-        "current": {},
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
+          "uid": "prometheus"
         },
         "definition": "label_values(glowroot_agent_rollup{job=~\"$job\"},instance)",
         "hide": 0,
@@ -1922,10 +1923,18 @@
       },
       {
         "allFormat": "glob",
-        "current": {},
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
+          "uid": "prometheus"
         },
         "definition": "label_values(glowroot_agent_rollup{job=~\"$job\", instance=~\"$instance\"},agent_rollup_display_name)",
         "hide": 0,
@@ -1951,10 +1960,18 @@
       },
       {
         "allFormat": "glob",
-        "current": {},
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
+          "uid": "prometheus"
         },
         "definition": "label_values(glowroot_agent_rollup{job=~\"$job\", instance=~\"$instance\", agent_rollup_display_name=~\"$AgentRollupDisplayName\"},agent_rollup)",
         "hide": 2,
@@ -1980,12 +1997,20 @@
       },
       {
         "allFormat": "glob",
-        "current": {},
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
+          "uid": "prometheus"
         },
-        "definition": "label_values(glowroot_agent_rollup_id_error{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\"},agent_id)",
+        "definition": "label_values(glowroot_agent_rollup_id{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\"},agent_id)",
         "hide": 0,
         "includeAll": true,
         "label": "AgentId",
@@ -1995,7 +2020,81 @@
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(glowroot_agent_rollup_id_error{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\"},agent_id)",
+          "query": "label_values(glowroot_agent_rollup_id{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\"},agent_id)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(glowroot_points_agent_rollup_id_slow_trace{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"},trace_id)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "TraceId",
+        "multi": true,
+        "multiFormat": "regex values",
+        "name": "TraceId",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(glowroot_points_agent_rollup_id_slow_trace{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"},trace_id)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(glowroot_points_agent_rollup_id_slow_trace{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"},status)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "SlowTraceStatus",
+        "multi": true,
+        "multiFormat": "regex values",
+        "name": "SlowTraceStatus",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(glowroot_points_agent_rollup_id_slow_trace{job=~\"$job\", instance=~\"$instance\", agent_rollup=~\"$AgentRollupName\", agent_id=~\"$AgentId\"},status)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
@@ -2010,7 +2109,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -2037,8 +2136,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "Glowroot Exporter Dashboard",
-  "uid": "d8cb174f-a247-4caf-b5f4-bd393f905404",
-  "version": 48,
+  "title": "Glowroot Exporter Dashboard New",
+  "uid": "d8cb174f-a247-4caf-b5f4-bd393f905405",
+  "version": 27,
   "weekStart": ""
 }

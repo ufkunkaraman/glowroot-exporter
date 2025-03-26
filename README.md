@@ -1,6 +1,6 @@
-# glowroot-exporter
+# Glowroot Exporter
 
-A Prometheus exporter for Glowroot APM metrics. This exporter collects transaction and error metrics from Glowroot and exposes them in Prometheus format.
+A Prometheus exporter for Glowroot APM metrics. This exporter collects various metrics from Glowroot and exposes them in Prometheus format.
 
 ## Features
 
@@ -15,10 +15,10 @@ Create a `config.yaml` file with the following structure:
 
 ```yaml
 server:
-  glowroot_url: "http://glowroot-server:4000"
-  exporter_port: 9101
-  glowroot_time_interval_minutes: 5
-  metrics_update_interval_seconds: 60
+  glowroot_url: "http://glowroot-server:4000"  # Glowroot server URL
+  exporter_port: 9100                          # Port for the Prometheus exporter
+  glowroot_time_interval_minutes: 60           # Time window for fetching metrics
+  metrics_update_interval_seconds: 60          # How often to update metrics
 ```
 
 ## Building
@@ -46,20 +46,18 @@ docker build -t glowroot-exporter .
 ### Docker Run
 
 ```bash
-docker run -p 9101:9101 -v $(pwd)/config.yaml:/app/config.yaml ufkunkaraman/glowroot-exporter:latest
+docker run -p 9101:9101 -v $(pwd)/config.yaml:/app/config.yaml glowroot-exporter:latest
 ```
 
-## Metrics
+## Metrics Exported
 
-The exporter exposes the following metrics at `/metrics`:
-
-- `glowroot_agent_rollup`: Information about Glowroot agent rollups
-- `glowroot_agent_rollup_id`: Information about Glowroot agent IDs
-- `glowroot_agent_rollup_id_error_total_count`: Total error count
-- `glowroot_agent_rollup_id_error_transaction_total_count`: Total transaction count
-- `glowroot_agent_rollup_id_error`: Error count per transaction
-- `glowroot_agent_rollup_id_slow_trace_transaction_total_count`: Slow trace transaction count
-- `glowroot_agent_rollup_id_slow_trace_transaction`: Transaction count per slow trace
+- `glowroot_agent_rollup` - Information about Glowroot agent rollups
+- `glowroot_agent_rollup_id` - Information about Glowroot agent IDs
+- `glowroot_summaries_agent_rollup_id_error_total_count` - Total error count from overall statistics
+- `glowroot_summaries_agent_rollup_id_error_transaction_total_count` - Total transaction count from overall statistics
+- `glowroot_summaries_agent_rollup_id_error` - Error count per individual transaction
+- `glowroot_trace_count_agent_rollup_id_slow_trace` - Total slow trace count for agent
+- `glowroot_points_agent_rollup_id_slow_trace` - Slow Trace points information
 
 ## Docker Compose Example
 
@@ -94,3 +92,27 @@ services:
 ### Error Overview
 ![Error Total](media/error-overview.png)
 
+## Usage
+
+1. Build the exporter:
+```bash
+go build
+```
+
+2. Run the exporter:
+```bash
+./glowroot-exporter
+```
+
+The exporter will start collecting metrics from Glowroot and expose them at `http://localhost:<exporter_port>/metrics`
+
+## Prometheus Configuration
+
+Add the following to your `prometheus.yml`:
+
+```yaml
+scrape_configs:
+  - job_name: 'glowroot-exporter'
+    static_configs:
+      - targets: ['localhost:9100']
+```
