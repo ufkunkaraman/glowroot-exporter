@@ -286,8 +286,6 @@ func fetchPointsSlowTrace(baseURL, agentID string) (*Points, error) {
 func fetchTraceHeader(baseURL, agentID, traceID string) (*TraceHeader, error) {
 	url := fmt.Sprintf("%s/backend/trace/header?agent-id=%s&trace-id=%s",
 		baseURL, url.QueryEscape(agentID), url.QueryEscape(traceID))
-	log.Println("------------------------------------------------")
-	log.Println(url)
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("HTTP request failed: %v", err)
@@ -469,10 +467,6 @@ func updateMetrics(baseURL string) {
 							"status":           pointType,
 							"transaction_name": transactionName,
 						}).Set(traceTime)
-
-						log.Printf("Points Metric - Agent Rollup: %s, Agent ID: %s, Trace ID: %s, Status: %s, Transaction: %s, Time: %f",
-							rollup.ID, agentId, traceId, pointType, transactionName, traceTime)
-					}
 				}
 
 				processPoints(points.NormalPoints, "normal")
