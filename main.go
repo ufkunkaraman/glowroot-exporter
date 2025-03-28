@@ -36,6 +36,11 @@ type Points struct {
 	PartialPoints [][4]interface{} `json:"partialPoints"`
 }
 
+// Update TraceHeader struct
+type TraceHeader struct {
+	TransactionName string `json:"transactionName"`
+}
+
 type AgentRollup struct {
 	ID       string        `json:"id"`
 	Display  string        `json:"display"`
@@ -130,13 +135,13 @@ var (
 		[]string{"agent_rollup", "agent_id"},
 	)
 
-	// pointsSlowTrace tracks the trace points for each agent
+	// Update pointsSlowTrace definition
 	pointsSlowTrace = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: "glowroot_points_agent_rollup_id_slow_trace",
 			Help: "Slow Trace points information",
 		},
-		[]string{"agent_rollup", "agent_id", "trace_id", "status"},
+		[]string{"agent_rollup", "agent_id", "trace_id", "status", "transaction_name"},
 	)
 )
 
@@ -277,6 +282,26 @@ func fetchPointsSlowTrace(baseURL, agentID string) (*Points, error) {
 	return &points, nil
 }
 
+// Add new function to fetch trace header
+func fetchTraceHeader(baseURL, agentID, traceID string) (*TraceHeader, error) {
+	url := fmt.Sprintf("%s/backend/trace/header?agent-id=%s&trace-id=%s",
+		baseURL, url.QueryEscape(agentID), url.QueryEscape(traceID))
+	log.Println("------------------------------------------------")
+	log.Println(url)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("HTTP request failed: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var traceHeader TraceHeader
+	if err := json.NewDecoder(resp.Body).Decode(&traceHeader); err != nil {
+		return nil, fmt.Errorf("JSON unmarshal failed: %v", err)
+	}
+
+	return &traceHeader, nil
+}
+
 // Add this function before updateMetrics
 func logMetrics(metricNames ...string) {
 	metricFamilies, err := prometheus.DefaultGatherer.Gather()
@@ -345,8 +370,6 @@ func updateMetrics(baseURL string) {
 		transactionErrorNew := transactionError
 		traceCountSlowTraceNew := traceCountSlowTrace
 		pointsSlowTraceNew := pointsSlowTrace
-		// fmt.Println("BEGIN agentRollup pointer is pointing to:", &agentRollup)
-		// fmt.Println("BEGIN agentRollupNew pointer is pointing to:", &agentRollupNew)
 
 		rollups, err := fetchAgentRollups(baseURL)
 		if err != nil {
@@ -423,19 +446,32 @@ func updateMetrics(baseURL string) {
 					continue
 				}
 
-				// Process all point types
+				// Update processPoints function
 				processPoints := func(points [][4]interface{}, pointType string) {
 					for _, point := range points {
 						traceTime := point[1].(float64)
 						agentId := point[2].(string)
 						traceId := point[3].(string)
 
+						// Fetch trace details
+						traceHeader, err := fetchTraceHeader(baseURL, agentId, traceId)
+						transactionName := "null"
+
+						if err == nil && traceHeader != nil && traceHeader.TransactionName != "" {
+							transactionName = traceHeader.TransactionName
+						}
+						log.Println(traceHeader)
+
 						pointsSlowTraceNew.With(prometheus.Labels{
-							"agent_rollup": rollup.ID,
-							"agent_id":     agentId,
-							"trace_id":     traceId,
-							"status":       pointType,
+							"agent_rollup":     rollup.ID,
+							"agent_id":         agentId,
+							"trace_id":         traceId,
+							"status":           pointType,
+							"transaction_name": transactionName,
 						}).Set(traceTime)
+
+						log.Printf("Points Metric - Agent Rollup: %s, Agent ID: %s, Trace ID: %s, Status: %s, Transaction: %s, Time: %f",
+							rollup.ID, agentId, traceId, pointType, transactionName, traceTime)
 					}
 				}
 
@@ -445,6 +481,14 @@ func updateMetrics(baseURL string) {
 			}
 		}
 
+		// Define new variables for metrics
+		agentRollup = agentRollupNew
+		agentRollupID = agentRollupIDNew
+		errorTotalCount = errorTotalCountNew
+		transactionTotalCount = transactionTotalCountNew
+		transactionError = transactionErrorNew
+		traceCountSlowTrace = traceCountSlowTraceNew
+		pointsSlowTrace = pointsSlowTraceNew
 		// // After processing all metrics, log them with specific metric names
 		// logMetrics(
 		// 	"glowroot_agent_rollup",
@@ -459,20 +503,6 @@ func updateMetrics(baseURL string) {
 		// 	"glowroot_trace_count_agent_rollup_id_slow_trace",
 		// 	"glowroot_points_agent_rollup_id_slow_trace",
 		// )
-
-		// Define new variables for metrics
-		agentRollup = agentRollupNew
-		agentRollupID = agentRollupIDNew
-		errorTotalCount = errorTotalCountNew
-		transactionTotalCount = transactionTotalCountNew
-		transactionError = transactionErrorNew
-		traceCountSlowTrace = traceCountSlowTraceNew
-		pointsSlowTrace = pointsSlowTraceNew
-
-		// fmt.Println("END agentRollup pointer is pointing to:", &agentRollup)
-		// fmt.Println("END agentRollupNew pointer is pointing to:", &agentRollupNew)
-		// fmt.Println("END agentRollup pointer is pointing to:", agentRollup)
-		// fmt.Println("END agentRollupNew pointer is pointing to:", agentRollupNew)
 
 		// Sleep for configured interval before fetching metrics again
 		time.Sleep(time.Duration(config.Server.MetricsUpdateIntervalSeconds) * time.Second)
