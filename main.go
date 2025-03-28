@@ -459,7 +459,6 @@ func updateMetrics(baseURL string) {
 						if err == nil && traceHeader != nil && traceHeader.TransactionName != "" {
 							transactionName = traceHeader.TransactionName
 						}
-						log.Println(traceHeader)
 
 						pointsSlowTraceNew.With(prometheus.Labels{
 							"agent_rollup":     rollup.ID,
